@@ -52,7 +52,7 @@ function Layout() {
                     Exit
                 </Button>
             </div>
-            <div data-testid="outlet-container">
+            <div data-testid="outlet-container" className={styles.content}>
                 <Outlet />
             </div>
         </div>
