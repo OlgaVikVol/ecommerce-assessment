@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
+import { MemoryRouter } from "react-router-dom"; 
 import ProductCard from "./ProductCard";
 
 describe("ProductCard Component", () => {
@@ -13,14 +14,22 @@ describe("ProductCard Component", () => {
     };
 
     it("renders the product card container", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const cardElement = screen.getByTestId("product-card");
 
         expect(cardElement).toBeInTheDocument();
     });
 
     it("renders the product header with background image", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const headerElement = screen.getByTestId("product-header");
 
         expect(headerElement).toBeInTheDocument();
@@ -30,7 +39,11 @@ describe("ProductCard Component", () => {
     });
 
     it("renders the product price and currency", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const priceElement = screen.getByTestId("product-price");
         const currencyElement = screen.getByTestId("product-currency");
 
@@ -40,7 +53,11 @@ describe("ProductCard Component", () => {
     });
 
     it("renders the add-to-cart button with an icon", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const buttonElement = screen.getByTestId("add-to-cart-button");
         const iconElement = screen.getByTestId("cart-button-icon");
 
@@ -50,7 +67,11 @@ describe("ProductCard Component", () => {
     });
 
     it("renders the product rating with an icon", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const ratingElement = screen.getByTestId("product-rating");
         const ratingIcon = screen.getByTestId("rating-icon");
 
@@ -61,7 +82,11 @@ describe("ProductCard Component", () => {
     });
 
     it("renders the product title and description", () => {
-        render(<ProductCard {...mockProps} />);
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
         const titleElement = screen.getByTestId("product-title");
         const descriptionElement = screen.getByTestId("product-description");
 

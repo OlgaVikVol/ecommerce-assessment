@@ -1,4 +1,22 @@
 .head {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 2 items per row */
+    gap: 20px; /* Spacing between product cards */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination span {
+    font-size: 16px;
 }
