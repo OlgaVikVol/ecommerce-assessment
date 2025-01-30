@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import { ProductCardProps } from "../../components/ProductCard/ProductCard.props";
 import { BASE_URL } from "../consts/api";
 
-export const useFetchProducts = () => {
-    const [products, setProducts] = useState<ProductCardProps[]>([]);
+export const useFetchProductById = (id: number | string) => {
+    const [product, setProduct] = useState<ProductCardProps | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchProduct = async () => {
             try {
                 setLoading(true);
 
-                // Make the request to /api/products
-                const response = await fetch(`${BASE_URL}/products`, {
+                // Make the request to /api/products/:id
+                const response = await fetch(`${BASE_URL}/products/${id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -21,9 +21,8 @@ export const useFetchProducts = () => {
                 });
 
                 if (response.ok) {
-                    // Assuming the response is a list of products, access `data` directly
                     const data = await response.json();
-                    setProducts(data);
+                    setProduct(data);
                 } else {
                     throw new Error(`Error: ${response.statusText}`);
                 }
@@ -37,8 +36,10 @@ export const useFetchProducts = () => {
             }
         };
 
-        fetchProducts();
-    }, []);
+        if (id) {
+            fetchProduct();
+        }
+    }, [id]);
 
-    return { products, loading, error };
+    return { product, loading, error };
 };

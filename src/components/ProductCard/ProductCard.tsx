@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./ProductCard.module.css";
 import { ProductCardProps } from "./ProductCard.props";
+import { truncateText } from "../../shared/helpers/truncateText";
 
 function ProductCard({ ...props }: ProductCardProps) {
     const { id, title, description, price, rating, image } = props;
@@ -49,7 +50,7 @@ function ProductCard({ ...props }: ProductCardProps) {
                         className={styles.description}
                         data-testid="product-description"
                     >
-                        {description}
+                        {truncateText(description, 28)}
                     </div>
                 </div>
             </div>

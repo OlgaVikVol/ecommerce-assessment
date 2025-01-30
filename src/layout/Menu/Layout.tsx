@@ -49,7 +49,7 @@ function Layout() {
                 </div>
                 <Button className={styles.exit} data-testid="exit-button">
                     <img src="/exit-icon.svg" alt="Exit Button" />
-                    Exit
+                    Log out
                 </Button>
             </div>
             <div data-testid="outlet-container" className={styles.content}>
