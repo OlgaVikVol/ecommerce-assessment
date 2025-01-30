@@ -5,9 +5,9 @@
 }
 
 .products {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 2 items per row */
-    gap: 20px; /* Spacing between product cards */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px; /* Spacing between product cards */
 }
 
 .pagination {
