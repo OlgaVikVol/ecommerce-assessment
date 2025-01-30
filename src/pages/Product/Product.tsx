@@ -9,30 +9,58 @@ function Product() {
     const navigate = useNavigate();
 
     return (
-        <div className={styles["product-container"]}>
-            <div className={styles["product-header"]}>
+        <div
+            className={styles["product-container"]}
+            data-testid="product-container"
+        >
+            <div
+                className={styles["product-header"]}
+                data-testid="product-header"
+            >
                 <img
                     src={product?.image}
                     alt={product?.title}
                     className={styles["product-image"]}
+                    data-testid="product-image"
                 />
-                <div className={styles["product-details"]}>
-                    <h2 className={styles["product-title"]}>
+                <div
+                    className={styles["product-details"]}
+                    data-testid="product-details"
+                >
+                    <h2
+                        className={styles["product-title"]}
+                        data-testid="product-title"
+                    >
                         {product?.title}
                     </h2>
-                    <p className={styles["product-description"]}>
+                    <p
+                        className={styles["product-description"]}
+                        data-testid="product-description"
+                    >
                         {product?.description}
                     </p>
-                    <p className={styles["product-price"]}>
+                    <p
+                        className={styles["product-price"]}
+                        data-testid="product-price"
+                    >
                         Price: ${product?.price}
                     </p>
-                    <p className={styles["product-rating"]}>
+                    <p
+                        className={styles["product-rating"]}
+                        data-testid="product-rating"
+                    >
                         Rating: {product?.rating} ⭐
                     </p>
-                    <div className={styles["button-group"]}>
-                        <Button>Add to Cart</Button>
+                    <div
+                        className={styles["button-group"]}
+                        data-testid="button-group"
+                    >
+                        <Button data-testid="add-to-cart-button">
+                            Add to Cart
+                        </Button>
                         <Button
                             className={styles["return-menu-btn"]}
+                            data-testid="return-menu-button"
                             onClick={() => navigate("/")}
                         >
                             Back to Menu

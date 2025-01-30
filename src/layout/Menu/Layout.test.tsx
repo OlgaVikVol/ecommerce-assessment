@@ -56,7 +56,7 @@ describe("Layout Component", () => {
     );
     const exitButton = screen.getByTestId("exit-button");
     expect(exitButton).toBeInTheDocument();
-    expect(exitButton).toHaveTextContent("Exit");
+    expect(exitButton).toHaveTextContent("Log out");
   });
 
   it("renders the Outlet container", () => {

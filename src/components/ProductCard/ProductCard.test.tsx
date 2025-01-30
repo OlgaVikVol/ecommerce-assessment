@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { MemoryRouter } from "react-router-dom"; 
 import ProductCard from "./ProductCard";
+import { truncateText } from "../../shared/helpers/truncateText";
 
 describe("ProductCard Component", () => {
     const mockProps = {
@@ -89,11 +90,14 @@ describe("ProductCard Component", () => {
         );
         const titleElement = screen.getByTestId("product-title");
         const descriptionElement = screen.getByTestId("product-description");
-
+    
         expect(titleElement).toBeInTheDocument();
         expect(titleElement).toHaveTextContent(mockProps.title);
-
+    
         expect(descriptionElement).toBeInTheDocument();
-        expect(descriptionElement).toHaveTextContent(mockProps.description);
+        
+        // Instead of checking full text, check the truncated text
+        const truncatedDescription = truncateText(mockProps.description, 28);
+        expect(descriptionElement).toHaveTextContent(truncatedDescription);
     });
 });
