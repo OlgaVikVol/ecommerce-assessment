@@ -96,7 +96,6 @@ describe("ProductCard Component", () => {
     
         expect(descriptionElement).toBeInTheDocument();
         
-        // Instead of checking full text, check the truncated text
         const truncatedDescription = truncateText(mockProps.description, 28);
         expect(descriptionElement).toHaveTextContent(truncatedDescription);
     });
