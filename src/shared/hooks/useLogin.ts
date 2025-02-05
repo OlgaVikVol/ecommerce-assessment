@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { BASE_URL } from "../consts/api";
 import { LoginResponse } from "../interfaces/auth.interface";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { userActions } from "../../store/user.slice";
 
 export const useLogin = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
 
     const login = async (
         email: string,
@@ -31,6 +35,7 @@ export const useLogin = () => {
             }
 
             const data: LoginResponse = await response.json();
+            dispatch(userActions.addToken(data.token));
             localStorage.setItem("token", data.token);
             return data;
         } catch (err: unknown) {
