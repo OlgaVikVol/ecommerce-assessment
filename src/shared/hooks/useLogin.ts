@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { BASE_URL } from "../consts/api";
-
-interface LoginResponse {
-    token: string;
-    email: string;
-}
+import { LoginResponse } from "../interfaces/auth.interface";
 
 export const useLogin = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const login = async (email: string, password: string): Promise<LoginResponse | null> => {
+    const login = async (
+        email: string,
+        password: string
+    ): Promise<LoginResponse | null> => {
         try {
             setLoading(true);
             setError(null);
@@ -24,7 +23,9 @@ export const useLogin = () => {
             });
 
             if (!response.ok) {
-                const errorMessage = (await response.json())?.message || "Invalid email or password";
+                const errorMessage =
+                    (await response.json())?.message ||
+                    "Invalid email or password";
                 setError(errorMessage);
                 return null;
             }
@@ -34,7 +35,7 @@ export const useLogin = () => {
             return data;
         } catch (err: unknown) {
             if (err instanceof Error) {
-                setError(err.message || "Network error"); 
+                setError(err.message || "Network error");
             }
             return null;
         } finally {
@@ -44,4 +45,3 @@ export const useLogin = () => {
 
     return { login, loading, error };
 };
-
