@@ -5,6 +5,8 @@ import Headling from "../../components/Headling/Headling";
 import Input from "../../components/Input/Input";
 import styles from "./Login.module.css";
 import { useLogin } from "../../shared/hooks/useLogin";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 export interface LoginFormInputs {
     email: string;
     password: string;
@@ -18,6 +20,7 @@ function Login() {
     } = useForm<LoginFormInputs>();
     const { login, loading, error } = useLogin();
     const navigate = useNavigate();
+    const { loginErrorMessage } = useSelector((s: RootState) => s.user);
 
     const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
         const response = await login(data.email, data.password);
@@ -29,6 +32,9 @@ function Login() {
     return (
         <div className={styles.login}>
             <Headling>Login</Headling>
+            {loginErrorMessage && (
+                <div className={styles["error"]}>{loginErrorMessage}</div>
+            )}
             <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.field}>
                     <label htmlFor="email">Email:</label>
