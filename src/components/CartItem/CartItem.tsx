@@ -5,16 +5,19 @@ import { CartItemProps } from "./CartItem.props";
 import styles from "./CartItem.module.css";
 
 function CartItem(props: CartItemProps) {
-	console.log(props, "here")
     const dispatch = useDispatch<AppDispatch>();
 
     const increase = () => {
         dispatch(cartActions.add(props.id));
     };
 
-    const decrease = () => {};
+    const decrease = () => {
+        dispatch(cartActions.remove(props.id));
+    };
 
-    const remove = () => {};
+    const remove = () => {
+        dispatch(cartActions.delete(props.id));
+    };
 
     return (
         <div className={styles.item}>
