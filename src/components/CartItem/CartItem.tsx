@@ -5,6 +5,7 @@ import { CartItemProps } from "./CartItem.props";
 import styles from "./CartItem.module.css";
 
 function CartItem(props: CartItemProps) {
+	console.log(props, "here")
     const dispatch = useDispatch<AppDispatch>();
 
     const increase = () => {
@@ -22,7 +23,7 @@ function CartItem(props: CartItemProps) {
                 style={{ backgroundImage: `url('${props.image}')` }}
             ></div>
             <div className={styles.description}>
-                <div className={styles.name}>{props.name}</div>
+                <div className={styles.name}>{props.title}</div>
                 <div className={styles.price}>{props.price}&nbsp;$</div>
             </div>
             <div className={styles.actions}>
