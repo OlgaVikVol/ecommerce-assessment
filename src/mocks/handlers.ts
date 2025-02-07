@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { getProducts } from "./product-list";
+import { Profile } from "../shared/interfaces/user.interface";
 
 interface LoginRequestBody {
     email: string;
@@ -19,7 +20,10 @@ export const handlers = [
         const product = products.find((p) => p.id === productId);
 
         if (!product) {
-            return HttpResponse.json({ message: "Product not found" }, { status: 404 });
+            return HttpResponse.json(
+                { message: "Product not found" },
+                { status: 404 }
+            );
         }
 
         return HttpResponse.json(product);
@@ -52,11 +56,48 @@ export const handlers = [
                 });
             }
 
-            return HttpResponse.json({ message: "Invalid credentials" }, { status: 401 });
-
+            return HttpResponse.json(
+                { message: "Invalid credentials" },
+                { status: 401 }
+            );
         } catch (error) {
-            return HttpResponse.json({ message: "Invalid request format" }, { status: 400 });
+            return HttpResponse.json(
+                { message: "Invalid request format" },
+                { status: 400 }
+            );
         }
     }),
-];
 
+    //Handler for User Profile Fetching
+    http.get("/api/user/profile", async ({ request }) => {
+        const authHeader = request.headers.get("Authorization");
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return HttpResponse.json(
+                { message: "Unauthorized. Missing or invalid token." },
+                { status: 401 }
+            );
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        // Mocked token validation
+        if (token !== "mocked-jwt-token") {
+            return HttpResponse.json(
+                { message: "Invalid token" },
+                { status: 403 }
+            );
+        }
+
+        // 🔹 Mocked Profile Data
+        const mockUserProfile: Profile = {
+            id: 1,
+            email: "test@example.com",
+            name: "John Doe",
+            phone: "+1 234 567 890",
+            address: "123 Main St, Toronto, ON, Canada",
+        };
+
+        return HttpResponse.json(mockUserProfile);
+    }),
+];

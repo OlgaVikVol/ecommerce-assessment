@@ -1,12 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loadState, saveState } from "./storage";
 import { BASE_URL } from "../shared/consts/api";
+import { Profile } from "../shared/interfaces/user.interface";
+import { RootState } from "./store";
 
 export const JWT_PERSISTENT_STATE = "userData";
 
 export interface UserState {
     token: string | null;
     loginErrorMessage?: string;
+    profile?: Profile;
 }
 
 const initialState: UserState = {
@@ -44,6 +47,33 @@ export const login = createAsyncThunk(
     }
 );
 
+export const getProfile = createAsyncThunk<Profile, void, { state: RootState }>(
+    "user/getProfile",
+    async (_, thunkApi) => {
+        const token = thunkApi.getState().user.token;
+        try {
+            const response = await fetch(`${BASE_URL}/user/profile`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data;
+            } else {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                console.error(e.message);
+            }
+        }
+    }
+);
+
 export const userSlice = createSlice({
     name: "user",
     initialState,
@@ -65,6 +95,9 @@ export const userSlice = createSlice({
         });
         builder.addCase(login.rejected, (state, action) => {
             state.loginErrorMessage = action.payload as string;
+        });
+        builder.addCase(getProfile.fulfilled, (state, action) => {
+            state.profile = action.payload;
         });
     },
 });
