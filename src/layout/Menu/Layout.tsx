@@ -61,9 +61,15 @@ function Layout() {
                         data-testid="menu-link-cart"
                     >
                         <img src="/cart-icon.svg" alt="Cart Icon" />
-                        Cart
+                        Cart{" "}
+                        <span className={styles.cartCount}>
+                            {" "}
+                            {items.reduce(
+                                (acc, item) => (acc += item.count),
+                                0
+                            )}
+                        </span>
                     </NavLink>
-                    {items.reduce((acc, item) => (acc += item.count), 0)}
                 </div>
                 <Button
                     className={styles.exit}
