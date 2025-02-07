@@ -2,9 +2,19 @@ import { Link } from "react-router-dom";
 import styles from "./ProductCard.module.css";
 import { ProductCardProps } from "./ProductCard.props";
 import { truncateText } from "../../shared/helpers/truncateText";
+import { MouseEvent } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { cartActions } from "../../store/cart.slice";
 
 function ProductCard({ ...props }: ProductCardProps) {
     const { id, title, description, price, rating, image } = props;
+    const dispatch = useDispatch<AppDispatch>();
+
+    const addItem = (e: MouseEvent) => {
+        e.preventDefault();
+        dispatch(cartActions.add(Number(id)));
+    };
 
     return (
         <Link to={`/product/${id}`} className={styles.link}>
@@ -26,6 +36,7 @@ function ProductCard({ ...props }: ProductCardProps) {
                     <button
                         className={styles["add-to-cart"]}
                         data-testid="add-to-cart-button"
+                        onClick={addItem}
                     >
                         <img
                             src="/cart-button-icon.svg"
