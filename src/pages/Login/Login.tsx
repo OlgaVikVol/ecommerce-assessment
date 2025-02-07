@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Button from "../../components/Button/Button";
 import Headling from "../../components/Headling/Headling";
 import Input from "../../components/Input/Input";
 import styles from "./Login.module.css";
-import { useLogin } from "../../shared/hooks/useLogin";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
+import { useEffect } from "react";
+import { login, userActions } from "../../store/user.slice";
 export interface LoginFormInputs {
     email: string;
     password: string;
@@ -18,15 +19,19 @@ function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormInputs>();
-    const { login, loading, error } = useLogin();
     const navigate = useNavigate();
-    const { loginErrorMessage } = useSelector((s: RootState) => s.user);
+    const dispatch = useDispatch<AppDispatch>();
+    const { token, loginErrorMessage } = useSelector((s: RootState) => s.user);
 
-    const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-        const response = await login(data.email, data.password);
-        if (response) {
+    useEffect(() => {
+        if (token) {
             navigate("/");
         }
+    }, [token, navigate]);
+
+    const onSubmit = (data: LoginFormInputs) => {
+        dispatch(userActions.clearLoginError());
+        dispatch(login(data));
     };
 
     return (
@@ -81,10 +86,8 @@ function Login() {
                     )}
                 </div>
 
-                {error && <p className={styles.errorMessage}>{error}</p>}
-
-                <Button appearance="big" type="submit" disabled={loading}>
-                    {loading ? "Logging in..." : "Enter"}
+                <Button appearance="big" type="submit">
+                    Enter
                 </Button>
             </form>
 

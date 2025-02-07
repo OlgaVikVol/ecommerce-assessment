@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { loadState, saveState } from "./storage";
 import { BASE_URL } from "../shared/consts/api";
 import { Profile } from "../shared/interfaces/user.interface";
@@ -9,6 +9,7 @@ export const JWT_PERSISTENT_STATE = "userData";
 export interface UserState {
     token: string | null;
     loginErrorMessage?: string;
+    registerErrorMessage?: string;
     profile?: Profile;
 }
 
@@ -38,8 +39,39 @@ export const login = createAsyncThunk(
                 return rejectWithValue(errorMessage);
             }
 
-            const data: { access_token: string } = await response.json();
-            saveState({ token: data.access_token }, JWT_PERSISTENT_STATE); // Save to storage
+            const data: { token: string } = await response.json();
+            saveState({ token: data.token }, JWT_PERSISTENT_STATE); // Save to storage
+            return data;
+        } catch (err) {
+            return rejectWithValue("Network error");
+        }
+    }
+);
+
+export const register = createAsyncThunk(
+    "user/register",
+    async (
+        {
+            email,
+            password,
+            name,
+        }: { email: string; password: string; name: string },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, name }),
+            });
+
+            if (!response.ok) {
+                const errorMessage =
+                    (await response.json())?.message || "Registration failed";
+                return rejectWithValue(errorMessage);
+            }
+
+            const data: { token: string } = await response.json();
             return data;
         } catch (err) {
             return rejectWithValue("Network error");
@@ -78,9 +110,6 @@ export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        addToken: (state, action: PayloadAction<string>) => {
-            state.token = action.payload;
-        },
         logout: (state) => {
             state.token = null;
             saveState({ token: null }, JWT_PERSISTENT_STATE);
@@ -88,16 +117,28 @@ export const userSlice = createSlice({
         clearLoginError: (state) => {
             state.loginErrorMessage = undefined;
         },
+        clearRegisterError: (state) => {
+            state.registerErrorMessage = undefined;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(login.fulfilled, (state, action) => {
-            state.token = action.payload.access_token;
+            state.token = action.payload.token;
         });
         builder.addCase(login.rejected, (state, action) => {
             state.loginErrorMessage = action.payload as string;
         });
         builder.addCase(getProfile.fulfilled, (state, action) => {
             state.profile = action.payload;
+        });
+        builder.addCase(register.fulfilled, (state, action) => {
+            if (!action.payload) {
+                return;
+            }
+            state.token = action.payload.token;
+        });
+        builder.addCase(register.rejected, (state, action) => {
+            state.registerErrorMessage = action.error.message;
         });
     },
 });

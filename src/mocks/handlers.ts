@@ -7,6 +7,26 @@ interface LoginRequestBody {
     password: string;
 }
 
+interface RegisterRequestBody {
+    email: string;
+    password: string;
+    name: string;
+}
+
+// 🔹 Temporary in-memory user storage
+const mockUsers: Array<{ profile: Profile; password: string }> = [
+    {
+        profile: {
+            id: 1,
+            email: "test@example.com",
+            name: "John Doe",
+            phone: "+1 234 567 890",
+            address: "123 Main St, Toronto, ON, Canada",
+        },
+        password: "password123",
+    },
+];
+
 export const handlers = [
     // Handler to fetch all products
     http.get("/api/products", () => {
@@ -68,7 +88,7 @@ export const handlers = [
         }
     }),
 
-    //Handler for User Profile Fetching
+    // Handler for User Profile Fetching
     http.get("/api/user/profile", async ({ request }) => {
         const authHeader = request.headers.get("Authorization");
 
@@ -81,7 +101,6 @@ export const handlers = [
 
         const token = authHeader.split(" ")[1];
 
-        // Mocked token validation
         if (token !== "mocked-jwt-token") {
             return HttpResponse.json(
                 { message: "Invalid token" },
@@ -89,7 +108,6 @@ export const handlers = [
             );
         }
 
-        // 🔹 Mocked Profile Data
         const mockUserProfile: Profile = {
             id: 1,
             email: "test@example.com",
@@ -99,5 +117,49 @@ export const handlers = [
         };
 
         return HttpResponse.json(mockUserProfile);
+    }),
+
+    // New Handler for User Registration
+    http.post("/api/auth/register", async ({ request }) => {
+        try {
+            const body = (await request.json()) as RegisterRequestBody;
+            const { email, password, name } = body;
+
+            if (!email || !password || !name) {
+                return HttpResponse.json(
+                    { message: "Email, password, and name are required" },
+                    { status: 400 }
+                );
+            }
+
+            const existingUser = mockUsers.find((user) => user.profile.email === email);
+            if (existingUser) {
+                return HttpResponse.json(
+                    { message: "User with this email already exists" },
+                    { status: 409 }
+                );
+            }
+
+            const newUserProfile: Profile = {
+                id: mockUsers.length + 1,
+                email,
+                name,
+                phone: "Not provided",
+                address: "Not provided",
+            };
+
+            mockUsers.push({ profile: newUserProfile, password });
+
+            return HttpResponse.json({
+                message: "Registration successful",
+                token: "mocked-jwt-token",
+                user: newUserProfile,
+            });
+        } catch (error) {
+            return HttpResponse.json(
+                { message: "Invalid request format" },
+                { status: 400 }
+            );
+        }
     }),
 ];
