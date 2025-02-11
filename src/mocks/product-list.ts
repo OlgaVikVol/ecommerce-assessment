@@ -7,6 +7,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 10.99,
             rating: 4.5,
+            category: "Italian",
         },
         {
             id: 2,
@@ -15,6 +16,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 7.99,
             rating: 4.2,
+            category: "Salad",
         },
         {
             id: 3,
@@ -24,6 +26,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 5.99,
             rating: 4.8,
+            category: "Dessert",
         },
         {
             id: 4,
@@ -33,6 +36,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 11.99,
             rating: 4.7,
+            category: "Italian",
         },
         {
             id: 5,
@@ -42,6 +46,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 12.99,
             rating: 4.6,
+            category: "Meat",
         },
         {
             id: 6,
@@ -50,6 +55,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 8.99,
             rating: 4.3,
+            category: "Salad",
         },
         {
             id: 7,
@@ -58,6 +64,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 6.99,
             rating: 4.9,
+            category: "Dessert",
         },
         {
             id: 8,
@@ -66,6 +73,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 18.99,
             rating: 4.7,
+            category: "Asian",
         },
         {
             id: 9,
@@ -74,6 +82,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 9.99,
             rating: 4.6,
+            category: "Meat",
         },
         {
             id: 10,
@@ -82,6 +91,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 13.99,
             rating: 4.5,
+            category: "Asian",
         },
         {
             id: 11,
@@ -90,6 +100,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 19.99,
             rating: 4.7,
+            category: "Meat",
         },
         {
             id: 12,
@@ -98,6 +109,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 8.99,
             rating: 4.4,
+            category: "Soup",
         },
         {
             id: 13,
@@ -106,6 +118,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 14.99,
             rating: 4.3,
+            category: "Fish",
         },
         {
             id: 14,
@@ -114,6 +127,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 5.99,
             rating: 4.8,
+            category: "Dessert",
         },
         {
             id: 15,
@@ -122,6 +136,7 @@ export function getProducts() {
             image: "/product-demo.png",
             price: 12.99,
             rating: 4.7,
+            category: "Italian",
         },
     ];
 }

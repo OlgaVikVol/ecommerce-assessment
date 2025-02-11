@@ -13,18 +13,35 @@ function Menu() {
     const [currentPage, setCurrentPage] = useState(1);
     const [filter, setFilter] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(products);
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    const [sortBy, setSortBy] = useState<"price" | "rating" | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    const categories = ["All", ...new Set(products.map((p) => p.category))];
 
     useEffect(() => {
         const lowerCaseFilter = filter.toLowerCase();
-        const filtered = products.filter(
+        let filtered = products.filter(
             (product) =>
-                product.title.toLowerCase().includes(lowerCaseFilter) ||
-                product.description.toLowerCase().includes(lowerCaseFilter)
+                (selectedCategory === "All" ||
+                    product.category === selectedCategory) &&
+                (product.title.toLowerCase().includes(lowerCaseFilter) ||
+                    product.description.toLowerCase().includes(lowerCaseFilter))
         );
+
+        if (sortBy) {
+            filtered = [...filtered].sort((a, b) => {
+                if (sortOrder === "asc") {
+                    return a[sortBy] - b[sortBy];
+                } else {
+                    return b[sortBy] - a[sortBy];
+                }
+            });
+        }
 
         setFilteredProducts(filtered);
         setCurrentPage(1);
-    }, [filter, products]);
+    }, [filter, products, selectedCategory, sortBy, sortOrder]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -53,6 +70,15 @@ function Menu() {
         setFilter(e.target.value);
     };
 
+    const toggleSort = (criteria: "price" | "rating") => {
+        if (sortBy === criteria) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(criteria);
+            setSortOrder("asc");
+        }
+    };
+
     return (
         <>
             <div className={styles.head}>
@@ -62,6 +88,43 @@ function Menu() {
                     onChange={updateFilter}
                 />
             </div>
+
+            <div className={styles.tabs}>
+                {categories.map((category, index) => (
+                    <Button
+                        key={index}
+                        className={
+                            category === selectedCategory
+                                ? styles.activeTab
+                                : styles.tab
+                        }
+                        onClick={() => setSelectedCategory(category)}
+                    >
+                        {category}
+                    </Button>
+                ))}
+            </div>
+
+            <div className={styles.sorting}>
+                <Button
+                    className={
+                        sortBy === "price" ? styles.activeSort : styles.sortButton
+                    }
+                    onClick={() => toggleSort("price")}
+                >
+                    Sort by Price {sortBy === "price" && (sortOrder === "asc" ? "⬆" : "⬇")}
+                </Button>
+
+                <Button
+                    className={
+                        sortBy === "rating" ? styles.activeSort : styles.sortButton
+                    }
+                    onClick={() => toggleSort("rating")}
+                >
+                    Sort by Rating {sortBy === "rating" && (sortOrder === "asc" ? "⬆" : "⬇")}
+                </Button>
+            </div>
+            
             <div className={styles.products}>
                 {currentProducts.length > 0 &&
                     currentProducts.map((product) => (
@@ -73,6 +136,7 @@ function Menu() {
                             rating={product.rating}
                             price={product.price}
                             image={product.image}
+                            category={product.category}
                         />
                     ))}
                 {currentProducts.length === 0 && <p>No products found.</p>}
