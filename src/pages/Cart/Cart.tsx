@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Headling from "../../components/Headling/Headling";
 import { RootState } from "../../store/store";
 import { useEffect, useState } from "react";
@@ -6,12 +6,17 @@ import { Product } from "../../shared/interfaces/product.interface";
 import CartItem from "../../components/CartItem/CartItem";
 import styles from "./Cart.module.css";
 import Button from "../../components/Button/Button";
+import { useNavigate } from "react-router-dom";
+import { cartActions } from "../../store/cart.slice";
 
 const DELIVERY_FEE = 10;
 
 function Cart() {
     const [cartProducts, setCartProducts] = useState<Product[]>([]);
     const items = useSelector((s: RootState) => s.cart.items);
+    const token = useSelector((s: RootState) => s.user.token);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const total = items
         .map((i) => {
@@ -23,7 +28,33 @@ function Cart() {
         })
         .reduce((acc, i) => (acc += i), 0);
 
-    const checkout = () => {};
+    const checkout = async () => {
+        if (!token) {
+            alert("Please log in to place an order.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/order", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ products: items }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Checkout failed.");
+            }
+
+            dispatch(cartActions.clean());
+            navigate("/success");
+        } catch (error) {
+            console.error("Checkout failed:", error);
+            alert("Checkout failed. Please try again.");
+        }
+    };
 
     useEffect(() => {
         const loadAllItems = async () => {
@@ -82,7 +113,8 @@ function Cart() {
                     </span>
                 </div>
                 <div className={styles.price}>
-                    {total + DELIVERY_FEE}&nbsp;<span>₽</span>
+                    {(Number(total) + DELIVERY_FEE).toFixed(2)}&nbsp;
+                    <span>₽</span>
                 </div>
             </div>
             <div className={styles.checkout}>

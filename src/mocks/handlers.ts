@@ -13,6 +13,10 @@ interface RegisterRequestBody {
     name: string;
 }
 
+interface OrderRequestBody {
+    products: { id: number; count: number }[];
+}
+
 // 🔹 Temporary in-memory user storage
 const mockUsers: Array<{ profile: Profile; password: string }> = [
     {
@@ -132,7 +136,9 @@ export const handlers = [
                 );
             }
 
-            const existingUser = mockUsers.find((user) => user.profile.email === email);
+            const existingUser = mockUsers.find(
+                (user) => user.profile.email === email
+            );
             if (existingUser) {
                 return HttpResponse.json(
                     { message: "User with this email already exists" },
@@ -155,6 +161,52 @@ export const handlers = [
                 token: "mocked-jwt-token",
                 user: newUserProfile,
             });
+        } catch (error) {
+            return HttpResponse.json(
+                { message: "Invalid request format" },
+                { status: 400 }
+            );
+        }
+    }),
+
+    // Handler for Checkout
+    http.post("/api/order", async ({ request }) => {
+        try {
+            const authHeader = request.headers.get("Authorization");
+
+            if (!authHeader || !authHeader.startsWith("Bearer ")) {
+                return HttpResponse.json(
+                    { message: "Unauthorized. Missing or invalid token." },
+                    { status: 401 }
+                );
+            }
+
+            const token = authHeader.split(" ")[1];
+
+            if (token !== "mocked-jwt-token") {
+                return HttpResponse.json(
+                    { message: "Invalid token" },
+                    { status: 403 }
+                );
+            }
+
+            const body = (await request.json()) as OrderRequestBody;
+
+            if (
+                !body.products ||
+                !Array.isArray(body.products) ||
+                body.products.length === 0
+            ) {
+                return HttpResponse.json(
+                    { message: "Invalid order request. No products provided." },
+                    { status: 400 }
+                );
+            }
+
+            return HttpResponse.json(
+                { message: "Order placed successfully!", orderId: Date.now() },
+                { status: 200 }
+            );
         } catch (error) {
             return HttpResponse.json(
                 { message: "Invalid request format" },

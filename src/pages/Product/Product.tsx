@@ -2,11 +2,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFetchProductById } from "../../shared/hooks/useFetchProductById";
 import styles from "./Product.module.css";
 import Button from "../../components/Button/Button";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { cartActions } from "../../store/cart.slice";
 
 function Product() {
     const { id } = useParams();
     const { product } = useFetchProductById(id ?? "");
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const addItem = () => {
+        dispatch(cartActions.add(Number(id)));
+    };
 
     return (
         <div
@@ -55,7 +63,10 @@ function Product() {
                         className={styles["button-group"]}
                         data-testid="button-group"
                     >
-                        <Button data-testid="add-to-cart-button">
+                        <Button
+                            data-testid="add-to-cart-button"
+                            onClick={addItem}
+                        >
                             Add to Cart
                         </Button>
                         <Button

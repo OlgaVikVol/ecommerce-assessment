@@ -75,6 +75,13 @@
     height: 29px;
 }
 
+.minus,
+.plus,
+.remove:hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
 .number {
     color: var(--text-color);
     font-size: 16px;
