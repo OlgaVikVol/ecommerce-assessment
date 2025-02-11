@@ -35,13 +35,19 @@ function Login() {
     };
 
     return (
-        <div className={styles.login}>
-            <Headling>Login</Headling>
+        <div className={styles.login} data-testid="login-page">
+            <Headling data-testid="login-heading">Login</Headling>
             {loginErrorMessage && (
-                <div className={styles["error"]}>{loginErrorMessage}</div>
+                <div className={styles.error} data-testid="login-error">
+                    {loginErrorMessage}
+                </div>
             )}
-            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-                <div className={styles.field}>
+            <form
+                className={styles.form}
+                onSubmit={handleSubmit(onSubmit)}
+                data-testid="login-form"
+            >
+                <div className={styles.field} data-testid="login-email-field">
                     <label htmlFor="email">Email:</label>
                     <Input
                         id="email"
@@ -55,15 +61,22 @@ function Login() {
                                 message: "Invalid email format",
                             },
                         })}
+                        data-testid="login-email-input"
                     />
                     {errors.email?.message && (
-                        <span className={styles.error}>
+                        <span
+                            className={styles.error}
+                            data-testid="login-email-error"
+                        >
                             {String(errors.email.message)}
                         </span>
                     )}
                 </div>
 
-                <div className={styles.field}>
+                <div
+                    className={styles.field}
+                    data-testid="login-password-field"
+                >
                     <label htmlFor="password">Password:</label>
                     <Input
                         id="password"
@@ -78,22 +91,32 @@ function Login() {
                                     "Password must be at least 6 characters",
                             },
                         })}
+                        data-testid="login-password-input"
                     />
                     {errors.password?.message && (
-                        <span className={styles.error}>
+                        <span
+                            className={styles.error}
+                            data-testid="login-password-error"
+                        >
                             {String(errors.password.message)}
                         </span>
                     )}
                 </div>
 
-                <Button appearance="big" type="submit">
+                <Button
+                    appearance="big"
+                    type="submit"
+                    data-testid="login-submit-button"
+                >
                     Enter
                 </Button>
             </form>
 
-            <div className={styles.links}>
+            <div className={styles.links} data-testid="login-links">
                 <div>Do not have an account yet?</div>
-                <Link to="/auth/register">Register</Link>
+                <Link to="/auth/register" data-testid="login-register-link">
+                    Register
+                </Link>
             </div>
         </div>
     );

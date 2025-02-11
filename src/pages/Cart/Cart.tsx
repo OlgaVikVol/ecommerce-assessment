@@ -30,7 +30,6 @@ function Cart() {
 
     const checkout = async () => {
         if (!token) {
-            alert("Please log in to place an order.");
             return;
         }
 
@@ -52,7 +51,6 @@ function Cart() {
             navigate("/success");
         } catch (error) {
             console.error("Checkout failed:", error);
-            alert("Checkout failed. Please try again.");
         }
     };
 
@@ -76,8 +74,14 @@ function Cart() {
 
     return (
         <>
-            <Headling className={styles.headling}>Cart</Headling>
-            {cartProducts.length === 0 && <p>Cart is empty.</p>}
+            <Headling className={styles.headling} data-testid="cart-heading">
+                Cart
+            </Headling>
+
+            {cartProducts.length === 0 && (
+                <p data-testid="cart-empty-message">Cart is empty.</p>
+            )}
+
             {cartProducts.length > 0 &&
                 cartProducts.map((product) => {
                     const item = items.find((i) => i.id === product.id);
@@ -88,24 +92,30 @@ function Cart() {
                             key={product.id}
                             count={item.count}
                             {...product}
+                            data-testid={`cart-item-${product.id}`}
                         />
                     );
                 })}
-            <div className={styles.line}>
+
+            <div className={styles.line} data-testid="cart-total-spent">
                 <div className={styles.text}>Total spent:</div>
                 <div className={styles.price}>
                     {total}&nbsp;<span>$</span>
                 </div>
             </div>
+
             <hr className={styles.hr} />
-            <div className={styles.line}>
+
+            <div className={styles.line} data-testid="cart-delivery-fee">
                 <div className={styles.text}>Delivery:</div>
                 <div className={styles.price}>
                     {DELIVERY_FEE}&nbsp;<span>$</span>
                 </div>
             </div>
+
             <hr className={styles.hr} />
-            <div className={styles.line}>
+
+            <div className={styles.line} data-testid="cart-final-total">
                 <div className={styles.text}>
                     Total{" "}
                     <span className={styles["total-count"]}>
@@ -117,8 +127,13 @@ function Cart() {
                     <span>₽</span>
                 </div>
             </div>
+
             <div className={styles.checkout}>
-                <Button appearance="big" onClick={checkout}>
+                <Button
+                    appearance="big"
+                    onClick={checkout}
+                    data-testid="checkout-button"
+                >
                     Make An Order
                 </Button>
             </div>

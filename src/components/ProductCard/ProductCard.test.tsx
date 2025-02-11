@@ -1,10 +1,18 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
-import { MemoryRouter } from "react-router-dom"; 
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import { truncateText } from "../../shared/helpers/truncateText";
+import { cartActions } from "../../store/cart.slice";
+import { useDispatch } from "react-redux";
+
+vi.mock("react-redux", () => ({
+    ...vi.importActual("react-redux"),
+    useDispatch: vi.fn(),
+}));
 
 describe("ProductCard Component", () => {
+    const mockDispatch = vi.fn();
     const mockProps = {
         id: 2,
         title: "Test Product",
@@ -12,7 +20,13 @@ describe("ProductCard Component", () => {
         price: 99.99,
         rating: 4.5,
         image: "/test-image.jpg",
+        category: "test",
     };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        (useDispatch as unknown as Mock).mockReturnValue(mockDispatch);
+    });
 
     it("renders the product card container", () => {
         render(
@@ -67,6 +81,22 @@ describe("ProductCard Component", () => {
         expect(iconElement).toHaveAttribute("src", "/cart-button-icon.svg");
     });
 
+    it("dispatches 'add to cart' action when button is clicked", () => {
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
+        const buttonElement = screen.getByTestId("add-to-cart-button");
+
+        fireEvent.click(buttonElement);
+
+        expect(mockDispatch).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).toHaveBeenCalledWith(
+            cartActions.add(mockProps.id)
+        );
+    });
+
     it("renders the product rating with an icon", () => {
         render(
             <MemoryRouter>
@@ -90,13 +120,25 @@ describe("ProductCard Component", () => {
         );
         const titleElement = screen.getByTestId("product-title");
         const descriptionElement = screen.getByTestId("product-description");
-    
+
         expect(titleElement).toBeInTheDocument();
         expect(titleElement).toHaveTextContent(mockProps.title);
-    
+
         expect(descriptionElement).toBeInTheDocument();
-        
-        const truncatedDescription = truncateText(mockProps.description, 28);
-        expect(descriptionElement).toHaveTextContent(truncatedDescription);
+        expect(descriptionElement).toHaveTextContent(
+            truncateText(mockProps.description, 28)
+        );
+    });
+
+    it("checks if the product card links to the correct product page", () => {
+        render(
+            <MemoryRouter>
+                <ProductCard {...mockProps} />
+            </MemoryRouter>
+        );
+
+        const linkElement = screen.getByRole("link");
+
+        expect(linkElement).toHaveAttribute("href", `/product/${mockProps.id}`);
     });
 });

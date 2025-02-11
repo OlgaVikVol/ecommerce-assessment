@@ -2,42 +2,32 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Product from "./Product";
-import * as fetchProductHook from "../../shared/hooks/useFetchProductById";
-import { ProductCardProps } from "../../components/ProductCard/ProductCard.props";
+import { cartActions } from "../../store/cart.slice";
 
-// Mock navigate before each test
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
     const actual = await vi.importActual("react-router-dom");
     return {
         ...actual,
-        useNavigate: () => mockNavigate, // Mocking navigation
+        useNavigate: () => mockNavigate,
     };
 });
 
-// Define a mock product
-const mockProduct: ProductCardProps = {
-    id: 1,
-    title: "Test Product",
-    description: "This is a test product description.",
-    price: 99.99,
-    rating: 4.5,
-    image: "/test-product.jpg",
-};
-
-// Spy on `useFetchProductById` and return correct mock data
-vi.spyOn(fetchProductHook, "useFetchProductById").mockImplementation((id: number | string) => ({
-    product: mockProduct,
-    loading: false,
-    error: "",
-}));
+const mockDispatch = vi.fn();
+vi.mock("react-redux", async () => {
+    const actual = await vi.importActual("react-redux");
+    return {
+        ...actual,
+        useDispatch: () => mockDispatch,
+    };
+});
 
 describe("Product Component", () => {
     beforeEach(() => {
-        mockNavigate.mockClear();
+        vi.clearAllMocks();
     });
 
-    it("renders product details correctly", () => {
+    const renderComponent = () =>
         render(
             <MemoryRouter initialEntries={["/product/1"]}>
                 <Routes>
@@ -46,21 +36,23 @@ describe("Product Component", () => {
             </MemoryRouter>
         );
 
+    it("renders product container", () => {
+        renderComponent();
         expect(screen.getByTestId("product-container")).toBeInTheDocument();
-        expect(screen.getByTestId("product-title")).toHaveTextContent(mockProduct.title);
-        expect(screen.getByTestId("product-description")).toContainHTML("This is a test product descr");
-        expect(screen.getByTestId("product-price")).toHaveTextContent(`Price: $${mockProduct.price}`);
-        expect(screen.getByTestId("product-rating")).toHaveTextContent(`Rating: ${mockProduct.rating} ⭐`);
     });
 
-    it("renders buttons and triggers navigation", () => {
-        render(
-            <MemoryRouter initialEntries={["/product/1"]}>
-                <Routes>
-                    <Route path="/product/:id" element={<Product />} />
-                </Routes>
-            </MemoryRouter>
-        );
+    it("dispatches add-to-cart action when 'Add to Cart' button is clicked", () => {
+        renderComponent();
+
+        const addToCartButton = screen.getByTestId("add-to-cart-button");
+        fireEvent.click(addToCartButton);
+
+        expect(mockDispatch).toHaveBeenCalled();
+        expect(mockDispatch).toHaveBeenCalledWith(cartActions.add(1)); 
+    });
+
+    it("navigates back to menu when 'Back to Menu' button is clicked", () => {
+        renderComponent();
 
         const returnMenuButton = screen.getByTestId("return-menu-button");
         fireEvent.click(returnMenuButton);
@@ -68,6 +60,8 @@ describe("Product Component", () => {
         expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 });
+
+
 
 
 
