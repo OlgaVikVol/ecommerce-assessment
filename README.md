@@ -1,50 +1,94 @@
-# React + TypeScript + Vite
+# Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React project built Redux, and TypeScript, allowing users to browse a menu of delicious dishes, add items to their cart, and complete their order. The app is designed with a modern UI, category-based filtering, and a seamless user experience.
 
-Currently, two official plugins are available:
+## 🛠️ Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React (TypeScript)
 
-## Expanding the ESLint configuration
+- **State Management**: Redux Toolkit
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Routing**: React Router
 
-- Configure the top-level `parserOptions` property like this:
+- **Forms**: React Hook Form
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **Testing**: Vitest, Testing Library
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Mocking**: MSW (Mock Service Worker)
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **Analytics**: Google Analytics 4 (GA4)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **Bundler**: Vite
+
+- **Styling**: CSS Modules
+
+
+
+## 🚀 Features
+
+*1️⃣ Authentication*
+
+**Login & Registration**: Users can create an account and log in.
+
+**Protected Routes**: Access to the cart and checkout pages is restricted to logged-in users.
+
+*2️⃣ Menu Page*
+
+**Category Filtering**: Users can filter items by categories (e.g., Italian, Salad, Dessert, etc.).
+
+**Search Bar**: Enables users to find dishes by name or ingredients.
+
+**Sorting**: Users can sort items by price or rating.
+
+**Pagination**: Ensures smooth navigation when browsing the menu.
+
+*3️⃣ Cart Page*
+
+**Add/Remove Items**: Users can increase, decrease, or remove items from the cart.
+
+**Cart Summary**: Displays total price and delivery fee.
+
+**Checkout**: Users can place an order.
+
+*4️⃣ Order Success Page*
+
+**Confirmation Message**: Displays order confirmation with an option to place a new order.
+
+*5️⃣ Google Analytics 4 (GA4) Integration*
+
+Tracks page views, cart interactions, and checkout process.
+
+## 📷 Screenshots
+
+### 🏠 Home/Menu Page
+
+![Home/Menu Page](src/assets/homepage.png)
+
+
+### 🛒 Cart Page
+
+![Home/Menu Page](src/assets/cart.png)
+
+
+### 🔐 Register Page
+
+![Home/Menu Page](src/assets/register.png)
+
+
+### 🔑 Login Page
+
+![Home/Menu Page](src/assets/login.png)
+
+## 🔧 Installation & Setup
+
+### Install Dependencies
+`npm install  # or yarn install`
+
+### Run the Development Server 
+`npm run dev  # or yarn dev`
+
+## Build for Production
+`npm run build`
+
+### Running Tests
+`npm run test`
